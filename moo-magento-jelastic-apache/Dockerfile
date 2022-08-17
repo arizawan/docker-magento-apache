@@ -37,6 +37,12 @@ RUN apt-get update \
     unzip \
     tar \
     cron \
+    htop \
+    openssh-server \
+    logrotate \
+    gawk \
+    iptables-persistent \
+    gettext \
     && apt-get clean
 
 # Install Magento Dependencies
@@ -84,12 +90,11 @@ RUN yes | pecl install xdebug-2.9.8 && \
 
 
 # Configuring system
-
-ADD /.docker/config/php.ini /usr/local/etc/php/php.ini
-ADD /.docker/config/magento.conf /etc/apache2/sites-available/magento.conf
-ADD /.docker/config/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
-COPY /.docker/bin/* /usr/local/bin/
-COPY /.docker/users/* /var/www/
+ADD .docker/config/php.ini /usr/local/etc/php/php.ini
+ADD .docker/config/magento.conf /etc/apache2/sites-available/magento.conf
+ADD .docker/config/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
+COPY .docker/bin/* /usr/local/bin/
+COPY .docker/users/* /var/www/
 RUN chmod +x /usr/local/bin/*
 RUN ln -s /etc/apache2/sites-available/magento.conf /etc/apache2/sites-enabled/magento.conf
 
@@ -100,7 +105,7 @@ RUN chmod 777 -Rf /var/www /var/www/.* \
     && a2enmod rewrite \
     && a2enmod headers
 
-USER www-data
+RUN ls -la
 
 VOLUME /var/www/html
 WORKDIR /var/www/html
